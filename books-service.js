@@ -47,6 +47,43 @@ app.get('/books/:id', async (req, res) => {
     }
 });
 
+// add book
+app.post('/books', (req, res) => {
+    const { title, authorId, categoryId } = req.body;
+    const id = books.length ? books[books.length - 1].id + 1 : 1;
+    const book = { id, title, authorId, categoryId };
+  
+    books.push(book);
+    res.status(201).json(book);
+});
+
+// modify book
+app.put('/books/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const { title, authorId, categoryId } = req.body;
+  
+    let book = books.find(book => book.id === id);
+  
+    if (!book) return res.status(404).json({ message: 'Livre non trouvé.' });
+  
+    book.title = title;
+    book.authorId = authorId;
+    book.categoryId = categoryId;
+  
+    res.status(200).json(book);
+  });
+  
+  // delete book
+  app.delete('/books/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    let book = books.find(book => book.id === id);
+  
+    if (!book) return res.status(404).json({ message: 'Livre non trouvé.' });
+  
+    books = books.filter(book => book.id !== id);
+    res.status(200).json({ message: 'Livre supprimé.' });
+  });
+
 app.listen(3000, () => {
     console.log("Microservices de gestion des livres démarré sur le port 3000");
 });

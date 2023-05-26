@@ -28,6 +28,41 @@ app.get('/categories/:id', async (req, res) => {
     }
 });
 
+// add category
+app.post('/categories', (req, res) => {
+    const { name } = req.body;
+    const id = categories.length ? categories[categories.length - 1].id + 1 : 1;
+    const category = { id, name };
+  
+    categories.push(category);
+    res.status(201).json(category);
+});
+
+// modify category
+app.put('/categories/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const { name } = req.body;
+  
+    let category = categories.find(category => category.id === id);
+  
+    if (!category) return res.status(404).json({ message: 'Catégorie non trouvé.' });
+  
+    category.name = name;
+  
+    res.status(200).json(category);
+  });
+  
+  // delete category
+  app.delete('/categories/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    let category = categories.find(category => category.id === id);
+  
+    if (!category) return res.status(404).json({ message: 'Catégorie non trouvé.' });
+  
+    categories = categories.filter(category => category.id !== id);
+    res.status(200).json({ message: 'Catégorie supprimé.' });
+  });
+
 app.listen(5000, () => {
     console.log("Microservices de gestion des categories démarré sur le port 5000")
 });

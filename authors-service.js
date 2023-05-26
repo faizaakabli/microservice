@@ -28,6 +28,41 @@ app.get('/authors/:id', async (req, res) => {
     }
 });
 
+// add author
+app.post('/authors', (req, res) => {
+    const { name } = req.body;
+    const id = authors.length ? authors[authors.length - 1].id + 1 : 1;
+    const author = { id, name };
+  
+    authors.push(author);
+    res.status(201).json(author);
+});
+
+// modify author
+app.put('/authors/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    const { name } = req.body;
+  
+    let author = authors.find(author => author.id === id);
+  
+    if (!author) return res.status(404).json({ message: 'Auteur non trouvé.' });
+  
+    author.name = name;
+  
+    res.status(200).json(author);
+  });
+  
+  // delete author
+app.delete('/authors/:id', (req, res) => {
+    const id = parseInt(req.params.id);
+    let author = authors.find(author => author.id === id);
+  
+    if (!author) return res.status(404).json({ message: 'Auteur non trouvé.' });
+  
+    authors = authors.filter(author => author.id !== id);
+    res.status(200).json({ message: 'Auteur supprimé.' });
+});
+
 app.listen(4000, () => {
     console.log("Microservices de gestion des auteurs démarré sur le port 4000")
 });
